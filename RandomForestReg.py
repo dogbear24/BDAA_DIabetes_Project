@@ -7,9 +7,12 @@ from sklearn.linear_model import LinearRegression
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error
+import joblib
+import time
 
+time_start = time.time()
 # Open data table to df
-filepath = "diabetes_dataset.csv"
+filepath = "data.csv"
 df = pd.read_csv(filepath)
 
 # Clean data
@@ -38,7 +41,7 @@ feature_columns = ['age', 'gender', 'ethnicity', 'education_level', 'income_leve
                   'ldl_cholesterol', 'triglycerides', 'glucose_fasting', 'glucose_postprandial',
                   'insulin_level']
 
-# Define target variable (we'll predict diabetes_risk_score)
+# Define target variable (predict diabetes_risk_score)
 target = 'diabetes_risk_score'
 
 # Prepare features (X) and target (y)
@@ -67,6 +70,7 @@ predictions = rf_model.predict(X_test)
 mse = mean_squared_error(y_test, predictions)
 rmse = np.sqrt(mse)
 r2 = sk.metrics.r2_score(y_test, predictions)
+percent_accuracy = 100 * (1 - (np.abs(y_test - predictions) / y_test).mean())
 
 print("\nModel Performance Metrics:")
 print(f"Mean Squared Error: {mse:.4f}")
@@ -79,6 +83,18 @@ feature_importance = pd.DataFrame({
     'importance': rf_model.feature_importances_
 })
 feature_importance = feature_importance.sort_values('importance', ascending=False)
+
+print("\n Feature Importance:")
+print(feature_importance.head(len(feature_columns)))
+
+
+# Save the trained model
+
+# joblib.dump(rf_model, "rf_reg_100_diabetes_model.pkl")
+# print("Model saved as rf_ref_100_diabetes_model.pkl")
+
+time_end = time.time()
+print(f"\nTotal Execution Time: {time_end - time_start:.2f} seconds")
 
 print("\nTop 10 Most Important Features:")
 print(feature_importance.head(10))
