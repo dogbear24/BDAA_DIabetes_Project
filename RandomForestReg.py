@@ -32,14 +32,7 @@ for feature in categorical_features:
     df[feature] = encoders[feature].fit_transform(df[feature])
 
 # Select features for prediction
-feature_columns = ['age', 'gender', 'ethnicity', 'education_level', 'income_level',
-                  'employment_status', 'smoking_status', 'alcohol_consumption_per_week',
-                  'physical_activity_minutes_per_week', 'diet_score', 'sleep_hours_per_day',
-                  'screen_time_hours_per_day', 'family_history_diabetes', 'hypertension_history',
-                  'cardiovascular_history', 'bmi', 'waist_to_hip_ratio', 'systolic_bp',
-                  'diastolic_bp', 'heart_rate', 'cholesterol_total', 'hdl_cholesterol',
-                  'ldl_cholesterol', 'triglycerides', 'glucose_fasting', 'glucose_postprandial',
-                  'insulin_level']
+feature_columns = ['age','gender','ethnicity','education_level','income_level','employment_status','smoking_status','alcohol_consumption_per_week','physical_activity_minutes_per_week','diet_score','sleep_hours_per_day','screen_time_hours_per_day','family_history_diabetes','hypertension_history','cardiovascular_history','bmi','waist_to_hip_ratio','systolic_bp','diastolic_bp','heart_rate']
 
 # Define target variable (predict diabetes_risk_score)
 target = 'diabetes_risk_score'
@@ -71,11 +64,15 @@ mse = mean_squared_error(y_test, predictions)
 rmse = np.sqrt(mse)
 r2 = sk.metrics.r2_score(y_test, predictions)
 percent_accuracy = 100 * (1 - (np.abs(y_test - predictions) / y_test).mean())
+percent_error = sk.metrics.mean_absolute_percentage_error(y_test, predictions, sample_weight=None, multioutput='uniform_average')
 
 print("\nModel Performance Metrics:")
 print(f"Mean Squared Error: {mse:.4f}")
 print(f"Root Mean Squared Error: {rmse:.4f}")
 print(f"R-squared Score: {r2:.4f}")
+print(f"Percent Accuracy: {percent_accuracy:.2f}%")
+print(f"Mean Absolute Percentage Error: {percent_error:.4f}")
+
 
 # Get feature importance
 feature_importance = pd.DataFrame({
@@ -87,7 +84,6 @@ feature_importance = feature_importance.sort_values('importance', ascending=Fals
 print("\n Feature Importance:")
 print(feature_importance.head(len(feature_columns)))
 
-
 # Save the trained model
 
 # joblib.dump(rf_model, "rf_reg_100_diabetes_model.pkl")
@@ -95,6 +91,3 @@ print(feature_importance.head(len(feature_columns)))
 
 time_end = time.time()
 print(f"\nTotal Execution Time: {time_end - time_start:.2f} seconds")
-
-print("\nTop 10 Most Important Features:")
-print(feature_importance.head(10))
