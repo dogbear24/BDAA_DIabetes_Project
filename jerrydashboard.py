@@ -2,14 +2,18 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import joblib
+import matplotlib
+matplotlib.use("TkAgg")
 import matplotlib.pyplot as plt
 import seaborn as sns
+from sklearn.metrics import ConfusionMatrixDisplay, accuracy_score
 
 # ==========================
 # 1. LOAD DATA AND MODEL
 # ==========================
 df = pd.read_csv("data.csv")
 model = joblib.load("rf_diabetes_model.pkl")
+y_test, y_pred = joblib.load("results.pkl")
 
 # ==========================
 # 2. DASHBOARD TITLE
@@ -23,6 +27,21 @@ st.markdown("Interactive dashboard for exploring diabetes data and making predic
 st.header("Data Overview")
 if st.checkbox("Show raw data"):
     st.write(df.head())
+
+# 1. CONFUSION MATRIX
+disp = ConfusionMatrixDisplay.from_predictions(y_test, y_pred, cmap="Blues")
+plt.title("Confusion Matrix")
+plt.show()
+
+# 2. ACCURACY BAR CHART
+acc = accuracy_score(y_test, y_pred)
+
+plt.figure(figsize=(5, 4))
+plt.bar(["Accuracy"], [acc], color="green")
+plt.ylim(0, 1)
+plt.title("Model Accuracy")
+plt.ylabel("Accuracy")
+plt.show()
 
 # --- Class Distribution ---
 st.subheader("Class Distribution")

@@ -70,5 +70,7 @@ print(classification_report(y_test, y_pred))
 # ==========================
 # 6. SAVE MODEL
 # ==========================
-joblib.dump(model, "rf_diabetes_model.pkl")
+joblib.dump(model, "rf_diabetes_model.joblib",compress=9)
 print("Model saved as rf_diabetes_model.pkl")
+
+joblib.dump((y_test, y_pred), "results.pkl")
